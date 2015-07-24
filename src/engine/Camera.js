@@ -26,14 +26,19 @@ Engine.Camera.prototype.alignToPath = function(pos)
         return false;
     }
 
-    for (var i = 0, l = this.paths.length; i < l; i++) {
-        var path = this.paths[i];
-        if (path.inWindow(pos)) {
-            this.pathIndex = i;
-            break;
+    /* If pathIndex points to something invalid, or if we have exited
+       the current window, look for a new pathIndex. */
+    if (!this.paths[this.pathIndex] || !this.paths[this.pathIndex].inWindow(pos)) {
+        for (var i = 0, l = this.paths.length; i < l; i++) {
+            var path = this.paths[i];
+            if (path.inWindow(pos)) {
+                this.pathIndex = i;
+                break;
+            }
         }
     }
 
+    /* No path found. */
     if (this.pathIndex < 0) {
         return false;
     }
