@@ -74,8 +74,8 @@ Game.objects.Character.prototype.resurrect = function()
 
 Game.objects.Character.prototype.timeShift = function(dt)
 {
-    this.isSupported = false;
     Engine.Object.prototype.timeShift.call(this, dt);
+    this.isSupported = false;
 }
 
 Game.objects.characters = {};

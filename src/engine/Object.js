@@ -11,6 +11,7 @@ Engine.Object = function()
     this.emitter = undefined;
     this.origo = new THREE.Vector2();
     this.position = undefined;
+    this.lastPos = new THREE.Vector2();
     this.time = 0;
     this.timeStretch = 1;
     this.traits = [];
@@ -115,6 +116,7 @@ Engine.Object.prototype.nudge = function(x, y)
 
 Engine.Object.prototype.obstruct = function(object, attack)
 {
+    this.lastPos.copy(this.position);
     this.trigger(this.EVENT_OBSTRUCT, [object, attack]);
 }
 
@@ -151,12 +153,14 @@ Engine.Object.prototype.timeShift = function(deltaTime)
 
     this.trigger(this.EVENT_TIMESHIFT, [deltaTime, this.time]);
 
+    this.velocity.x = (this.position.x - this.lastPos.x) / deltaTime;
+    this.velocity.y = (this.position.y - this.lastPos.y) / deltaTime;
+
+    this.lastPos.copy(this.position);
+
     for (var i = 0, l = this.animators.length; i < l; ++i) {
         this.animators[i].update(deltaTime);
     }
-
-    this.position.x += this.velocity.x * deltaTime;
-    this.position.y += this.velocity.y * deltaTime;
 }
 
 Engine.Object.prototype.uncollides = function(withObject)
